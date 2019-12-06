@@ -31,9 +31,9 @@ int netloader(char *filename, int graph_matrix[][MAX_NUM_SENSOR], int num_sensor
             return -1;
         }
         raw_matrix[a][b] = 1;
+        raw_matrix[b][a] = 1;
         max_num = MAX(max_num, a);
         max_num = MAX(max_num, b);
-        // printf("%d %d\n", a, b);
     }
     fclose(file);
 
@@ -56,15 +56,19 @@ int netloader(char *filename, int graph_matrix[][MAX_NUM_SENSOR], int num_sensor
             }
         }
     }
-    printf("cnt = %d\n", cnt);
+    // printf("cnt = %d\n", cnt);
+    printf("sub connected graph done\n");
 
     for(int i = 0; i < num_sensor; i++){
         for(int j = 0; j < num_sensor; j++){
             graph_matrix[i][j] = raw_matrix[final_sensor[i]][final_sensor[j]];
-            // printf("%d ", graph_matrix[i][j]);
         }
-        // printf("\n");
-        break;
+    }
+    for(int i = 0; i < num_sensor; i++){
+        int cnt = 0;
+        for(int j = 0; j < num_sensor; j++){
+            cnt += graph_matrix[i][j];
+        }
     }
     return 0;
 }

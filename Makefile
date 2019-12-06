@@ -1,4 +1,4 @@
-CPPFLAGS = -Wall -O2
+CPPFLAGS = -Wall -O3 -lm -w -std=c11
 PROGRAMS = exact
 
 all: $(PROGRAMS)

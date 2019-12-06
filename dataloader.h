@@ -20,8 +20,6 @@ void get_new_obsv_vec(int obsv_vec[][MAX_DIMENSION], int reference_i, int target
 // given the number of sersors (1589)
 // return the dimension of the observation vector. 
 int dataloader(char *filename, int obsv_vec[][MAX_DIMENSION], int num_sensor){
-    srand(time(NULL));
-
     FILE *file = fopen(filename, "r");
     if(file == NULL){
         return -1;
