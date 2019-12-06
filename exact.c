@@ -102,7 +102,7 @@ int main(int argc, char **argv){
     }
 
     int * graph_matrix = malloc(sizeof(int) * MAX_NUM_SENSOR * MAX_NUM_SENSOR);
-    int res = netloader("./networks/facebook.dat", graph_matrix, MAX_NUM_SENSOR);
+    int res = netloader("./networks/supermaket.dat", graph_matrix, MAX_NUM_SENSOR);
     printf("network loading: %d\n", res);
     
     clock_t t; 
