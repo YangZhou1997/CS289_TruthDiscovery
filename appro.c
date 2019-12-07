@@ -35,7 +35,9 @@ double _cal_avg_dis(int * vec_a, int * vec_b, int dimension){
 
 double cal_avg_dis(int * vec_a, int * vec_b, int dimension){
     double res = _cal_avg_dis(vec_a, vec_b, dimension);
-    return (- (1 - res) * log(1 - res) - res * log(res));
+    if(res > 0 && res < 1.0)
+        return (- (1 - res) * log(1 - res) - res * log(res));
+    return 0;
 }
 
 
