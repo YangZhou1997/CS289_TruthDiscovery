@@ -14,16 +14,21 @@ typedef struct sensor
     double cur_avg_obj_val;
 }sensor;
 
-double cal_avg_dis(int * vec_a, int * vec_b, int dimension){
+double _cal_avg_dis(int * vec_a, int * vec_b, int dimension){
     double res = 0;
     for(int i = 0; i < dimension; i++){
         res += vec_a[i] ^ vec_b[i];
     }
     res /= dimension; // what if res == 0?
-    // res += 1e-10;
-    // printf("%lf\n", res);
+    return res;
+}
+
+double cal_avg_dis(int * vec_a, int * vec_b, int dimension){
+    double res = _cal_avg_dis(vec_a, vec_b, dimension);
     return (- (1 - res) * log(1 - res) - res * log(res));
 }
+
+
 
 int get_sensor_b(int sensor_a, int graph_matrix[][MAX_NUM_SENSOR], int num_sensor){
     int cnt_neighbor = 0;
@@ -84,14 +89,25 @@ sensor exact(int obsv_vec[][MAX_DIMENSION], int graph_matrix[][MAX_NUM_SENSOR], 
             }
         }
     }
+    return sensors[0];
 }
 
 int main(int argc, char **argv){
     srand(time(NULL));
 
+    char dataset[500];
+    char network[500];
+    char truth[500];
+    sprintf(dataset, "./datasets/%s.dat", argv[1]);
+    sprintf(network, "./networks/%s.dat", argv[2]);
+    sprintf(truth, "./datasets/%s_truth.dat", argv[1]);
+
+    int k = atoi(argv[3]);
+
+
     int * obsv_vec = malloc(sizeof(int) * MAX_NUM_SENSOR * MAX_DIMENSION);
 
-    int dimension = dataloader("./datasets/test.dat", obsv_vec, MAX_NUM_SENSOR);
+    int dimension = dataloader(dataset, obsv_vec, MAX_NUM_SENSOR);
     printf("dimension of observation vector is %d\n", dimension);
 
     for(int i = 0; i < MAX_NUM_SENSOR; i++){
@@ -102,15 +118,38 @@ int main(int argc, char **argv){
     }
 
     int * graph_matrix = malloc(sizeof(int) * MAX_NUM_SENSOR * MAX_NUM_SENSOR);
-    int res = netloader("./networks/supermaket.dat", graph_matrix, MAX_NUM_SENSOR);
+    int res = netloader(network, graph_matrix, MAX_NUM_SENSOR);
     printf("network loading: %d\n", res);
     
     clock_t t; 
     t = clock();
-    exact(obsv_vec, graph_matrix, MAX_NUM_SENSOR, dimension, 1000);
+    sensor res_vec = exact(obsv_vec, graph_matrix, MAX_NUM_SENSOR, dimension, k  * 1589);
     t = clock() - t; 
     double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds 
     printf("time spent: %lf\n", time_taken);
+
+    
+    int truth_vec[MAX_DIMENSION];
+    FILE *file = fopen(truth, "r");
+    if(file == NULL){
+        return -1;
+    }
+    int cnt = 0;
+    int res_dimen;
+    int bit;
+    char flag;
+    int cnt_sensor = 0;
+        
+    // read data and store into 
+    while(fscanf(file, "%d%c", &bit, &flag) != EOF){
+        truth_vec[cnt ++] = bit;
+    }
+    fclose(file);
+
+
+    double error_rate = _cal_avg_dis(res_vec.min_vec, truth_vec, dimension);
+    printf("error rate: %lf\n", error_rate);
+
 
     return 0;
 }
