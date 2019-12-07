@@ -140,16 +140,20 @@ int main(int argc, char **argv){
     char flag;
     int cnt_sensor = 0;
         
-    // read data and store into 
+    // read data and store into truth_vec
     while(fscanf(file, "%d%c", &bit, &flag) != EOF){
         truth_vec[cnt ++] = bit;
     }
     fclose(file);
 
-
     double error_rate = _cal_avg_dis(res_vec.min_vec, truth_vec, dimension);
     printf("error rate: %lf\n", error_rate);
 
+    double obj_val = 0;
+    for(int i = 0; i < MAX_NUM_SENSOR; i++){
+        obj_val += cal_avg_dis(obsv_vec + i * MAX_DIMENSION, res_vec.min_vec, dimension);
+    }
+    printf("objective value: %lf\n", obj_val);
 
     return 0;
 }
