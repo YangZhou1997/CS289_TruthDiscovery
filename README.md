@@ -33,3 +33,9 @@ make appro
 # ./appro $dataset_name $network_name $k1 $k2
 ./appro stock geometric 1000 1
 ```
+
+```
+make vote
+# ./vote $dataset_name $network_name $k
+./vote stock geometric 10
+```
